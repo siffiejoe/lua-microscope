@@ -1,0 +1,93 @@
+/* css file for formatting Lua module descriptions generated using
+ * markdown */
+
+/* general setup */
+body {
+  margin: 0px;
+  padding: 0px;
+  font-size: 15px;
+  font-family: arial,helvetica,geneva,sans-serif;
+}
+p, pre, blockquote {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+
+/* logo (centered) */
+body > p:first-child > img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* headers / captions */
+h1 {
+  text-align: center;
+  font-size: 32px;
+  font-weight: bold;
+}
+h2, h3, h4, h5, h6 {
+  margin-top: 35px;
+  padding: 0px 40px 0px 40px;
+  background-color: #E7E7E7;
+  line-height: 30px;
+  font-weight: normal;
+}
+h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+h3 {
+  font-size: 22px;
+}
+h4 {
+  font-size: 20px;
+}
+h5 {
+  font-size: 18px;
+}
+h6 {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+/* links */
+a {
+  color: #000088;
+  text-decoration: none;
+  font-weight: bold;
+}
+a:hover {
+  color: #FF0000;
+  background-color: #E7E7E7;
+  text-decoration: underline;
+}
+
+
+/* table of contents */
+div.toc {
+  text-align: center;
+}
+div.toc a {
+  font-weight: normal;
+  margin: 0px 5px;
+}
+
+
+/* code sections / quotes / etc. */
+code {
+  font-weight: bold;
+}
+pre {
+  background-color: #F0F0F0;
+  border-left: 1px black solid;
+  padding: 5px 15px 5px 15px;
+}
+pre > code {
+  font-weight: normal;
+}
+
+
