@@ -184,7 +184,7 @@ Leads to:
 The source code (with documentation and test scripts) is available on
 [github][3].
 
-  [3]:  https://github.com/siffiejoe/lua-microscope
+  [3]:  https://github.com/siffiejoe/lua-microscope/
 
 
 ##                           Installation                           ##
