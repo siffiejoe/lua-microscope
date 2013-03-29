@@ -1,0 +1,33 @@
+#!/bin/bash
+set -e
+LUAV=5.1
+LUAV=5.2
+if [ "$LUAV" == 5.1 ]; then
+  INC=/usr/include/lua5.1
+elif [ "$LUAV" == 5.2 ]; then
+  INC=/usr/include/lua5.2
+else
+  echo "invalid Lua version: $LUAV!" 1>&2
+  exit 1
+fi
+gcc -Wall -Wextra -fpic -I"$INC" -shared -o light.so light.c
+gcc -Wall -Wextra -fpic -I"$INC" -shared -o newproxy.so newproxy.c
+luac$LUAV    -o bytecode.n.luac bytecode.lua
+luac$LUAV -s -o bytecode.s.luac bytecode.lua
+
+for i in `seq 1 8`; do
+  echo "running microscope$i.test.lua"
+  lua$LUAV microscope$i.test.lua
+done
+
+for f in *.dot; do
+  if [ -f "$f" ]; then
+    img="${f%.dot}.gif"
+    echo "making $img..."
+    dot -T gif -o "$img" "$f"
+  fi
+done
+
+exit 0
+
+rm -f *.dot *.gif *.luac *.so
