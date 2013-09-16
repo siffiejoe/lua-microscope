@@ -270,15 +270,15 @@ do
 end
 
 print( "testing registry ..." )
-dot( "dummy", 2, "registry", "registry table with max_depth 2" )
+dot( "dummy", "registry table with max_depth 2", "registry", 2 )
 
 print( "testing locals and (no-)html option ..." )
 do
-  dot( "dummy", "locals", 3, microscope, "locals from main thread" )
+  dot( "dummy", "locals from main thread", "locals", 3, microscope )
 
   local function f1( arg1 )
-    dot( "dummy", "locals", 3, microscope,
-         "locals from active coroutine" )
+    dot( "dummy", "locals from main active coroutine",
+         "locals", 3, microscope )
     coroutine.yield( arg1 )
   end
 
@@ -297,10 +297,10 @@ do
 
   local function f3( v, n )
     for i = 1, n do
-      dot( v, "locals", 3, microscope,
-           "locals with max_depth 3 (html version)" )
-      dot( v, "locals", "nohtml", 3, microscope,
-           "locals with max_depth 3 (nohtml version)" )
+      dot( v, "locals with max_depth 3 (html version)",
+           "locals", 3, microscope )
+      dot( v, "locals with max_depth 3 (nohtml version)",
+           "locals", "nohtml", 3, microscope )
     end
   end
 
@@ -406,5 +406,19 @@ print( "testing alternative output function ..." )
 microscope( function( s ) print( ">", s ) end, nil )
 
 print( "testing for old bugs ..." )
+do
+  local t = {}
+  setmetatable( t, {
+    __tostring = function( v )
+      return "table: abcdefghijklmnopqrstuvwxyz0123456789"
+    end
+  } )
+  local u = newproxy( true )
+  getmetatable( u ).__tostring = function( u )
+    return "udata: abcdefghijklmnopqrstuvwxyz0123456789"
+  end
+  dot( { t, u }, "abbreviation in table cells" )
+end
+
 -- TODO ;-)
 

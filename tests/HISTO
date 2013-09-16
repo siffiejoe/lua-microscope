@@ -1,19 +1,36 @@
 #!/bin/bash
 set -e
+
+LUAV=jit
 LUAV=5.1
 LUAV=5.2
+
+compile_lua() {
+  luac$LUAV -o "$2" "$1"
+}
+compile_lua_s() {
+  luac$LUAV -s -o "$2" "$1"
+}
 if [ "$LUAV" == 5.1 ]; then
   INC=/usr/include/lua5.1
 elif [ "$LUAV" == 5.2 ]; then
   INC=/usr/include/lua5.2
+elif [ "$LUAV" == jit ]; then
+  INC=/home/siffiejoe/.self/programs/luajit-2.0/include/luajit-2.0
+  compile_lua() {
+    luajit -bg "$1" "$2"
+  }
+  compile_lua_s() {
+    luajit -bs "$1" "$2"
+  }
 else
   echo "invalid Lua version: $LUAV!" 1>&2
   exit 1
 fi
 gcc -Wall -Wextra -fpic -I"$INC" -shared -o light.so light.c
 gcc -Wall -Wextra -fpic -I"$INC" -shared -o newproxy.so newproxy.c
-luac$LUAV    -o bytecode.n.luac bytecode.lua
-luac$LUAV -s -o bytecode.s.luac bytecode.lua
+compile_lua bytecode.lua bytecode.n.luac
+compile_lua_s bytecode.lua bytecode.s.luac
 
 for i in `seq 1 8`; do
   echo "running microscope$i.test.lua"

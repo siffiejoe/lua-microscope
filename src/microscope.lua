@@ -1,6 +1,6 @@
 -- generate a graphviz graph from a lua table structure
 
-local max_label_length = 20
+local max_label_length = 25
 
 -- cache globals
 local assert = assert
@@ -396,7 +396,7 @@ local function make_label_elem( tnode, v, db, subid, depth, alt )
       dottify_ref( tnode, subid, n, t == "table" and "0" or nil, db )
     end
     alt = alt or tostring( v )
-    return alt or escape( abbrev( alt ), db.use_html )
+    return escape( abbrev( alt ), db.use_html )
   end
 end
 
