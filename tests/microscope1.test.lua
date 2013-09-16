@@ -7,6 +7,14 @@ local light = require( "light" )
 local full  = newproxy()
 local func  = function() end
 local co  = coroutine.create( function() end )
+local cdata, ctype
+do
+  local ok, ffi = pcall( require, "ffi" )
+  if ok then
+    ctype = ffi.metatype( "struct { int number; }", {} )
+    cdata = ffi.new( ctype )
+  end
+end
 
 local n = 0
 local function dot( v, label, ... )
@@ -27,18 +35,29 @@ dot( light, "plain light userdata value" )
 dot( full, "plain full userdata value" )
 dot( co, "plain coroutine/thread value" )
 dot( {}, "plain empty table value" )
+if ctype and cdata then
+  dot( ctype, "luajit ctype object" )
+  dot( cdata, "luajit cdata object" )
+end
 
 print( "testing all Lua types as table keys/values ..." )
-dot( {
-  [ true ] = false,
-  [ 123 ] = 456,
-  xyz = "abc",
-  [ func ] = func,
-  [ light ] = light,
-  [ full ] = full,
-  [ co ] = co,
-  [ {} ] = {},
-}, "all Lua types as table keys and values" )
+do
+  local t = {
+    [ true ] = false,
+    [ 123 ] = 456,
+    xyz = "abc",
+    [ func ] = func,
+    [ light ] = light,
+    [ full ] = full,
+    [ co ] = co,
+    [ {} ] = {}
+  }
+  if ctype and cdata then
+    t[ ctype ] = ctype
+    t[ cdata ] = cdata
+  end
+  dot( t, "all Lua types as table keys and values" )
+end
 
 print( "testing all Lua types as upvalues ..." )
 do
@@ -51,8 +70,10 @@ do
   local f = full
   local g = co
   local h = {}
+  local i = ctype
+  local j = cdata
   dot( function()
-    return _, a, b, c, d, e, f, g, h
+    return _, a, b, c, d, e, f, g, h, i, j
   end, "all Lua types as function upvalues" )
 end
 

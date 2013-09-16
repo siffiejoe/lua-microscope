@@ -631,6 +631,16 @@ local function dottify_userdata( db, node, val )
 end
 
 
+local function dottify_cdata( db, node, val )
+  node.label = escape( abbrev( tostring( val ) ), false )
+  node.shape = "parallelogram"
+  node.margin = "0.01"
+  -- cdata objects *do* have a metatable but it's always
+  -- the same, so it's not really interesting ...
+  -- handle_metatable( db, node, val )
+end
+
+
 local function dottify_thread( db, node, val )
   node.label = escape( abbrev( tostring( val ) ), false )
   node.group = node.label
@@ -683,7 +693,8 @@ local callbacks = {
   number = dottify_other,
   boolean = dottify_other,
   [ "nil" ] = dottify_other,
-  stack = dottify_stack
+  stack = dottify_stack,
+  cdata = dottify_cdata
 }
 
 local function dottify_go( db, val )
