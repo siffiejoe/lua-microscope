@@ -327,7 +327,7 @@ end
 
 local function abbrev( str )
   if #str > max_label_length then
-    str = ssub( str, 1, max_label_length-3 ) .. "..."
+    str = ssub( str, 1, max_label_length-9 ).."..."..ssub( str, -6 )
   end
   return str
 end
@@ -363,18 +363,24 @@ local record_escapes = {
   [ "|" ] = "\\|",
 }
 
+local function html_escaper( c )
+  return sformat( "\\%03d", sbyte( c ) )
+end
+
+local function record_escaper( c )
+  return sformat( "\\\\%03d", sbyte( c ) )
+end
+
 local function escape( str, use_html )
   local esc
   if use_html then
-    esc = "\\"
+    esc = html_escaper
     str = sgsub( str, "[\r\n\t\f\v\\'<>&\"]", html_escapes )
   else
-    esc = "\\\\"
+    esc = record_escaper
     str = sgsub( str, "[\r\n\t\f\v\\'<>\"{}|]", record_escapes )
   end
-  str = sgsub( str, "[^][%w !\"#$%%&'()*+,./:;<=>?@\\^_`{|}~-]", function( c )
-    return sformat( "%s%03d", esc, sbyte( c ) )
-  end )
+  str = sgsub( str, "[^][%w !\"#$%%&'()*+,./:;<=>?@\\^_`{|}~-]", esc )
   return str
 end
 
