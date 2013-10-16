@@ -6,7 +6,7 @@
 
 <p><img src="microscope.png" alt="microscope Logo" /></p>
 
-<h1>microscope -- Visualizing Complex Lua Values Using GraphViz</h1><div class="toc"><a href="#Introduction" title="Introduction">Introduction</a> · <a href="#Basic_Usage" title="Basic Usage">Basic Usage</a> · <a href="#Reference" title="Reference">Reference</a> · <a href="#Download" title="Download">Download</a> · <a href="#Installation" title="Installation">Installation</a> · <a href="#Contact" title="Contact">Contact</a> · <a href="#License" title="License">License</a></div>
+<h1>microscope -- Visualizing Complex Lua Values Using GraphViz</h1><div class="toc"><a href="#Introduction" title="Introduction">Introduction</a> · <a href="#Basic_Usage" title="Basic Usage">Basic Usage</a> · <a href="#Reference" title="Reference">Reference</a> · <a href="#Download" title="Download">Download</a> · <a href="#Installation" title="Installation">Installation</a> · <a href="#Changes" title="Changes">Changes</a> · <a href="#Contact" title="Contact">Contact</a> · <a href="#License" title="License">License</a></div>
 
 <h2><a name="Introduction" id="Introduction"></a>Introduction</h2>
 
@@ -181,7 +181,7 @@ todot( "example6.dot", t, "leaves" )
 <h2><a name="Download" id="Download"></a>Download</h2>
 
 <p>The source code (with documentation and test scripts) is available on
-<a href="https://github.com/siffiejoe/lua-microscope">github</a>.</p>
+<a href="https://github.com/siffiejoe/lua-microscope/">github</a>.</p>
 
 
 
@@ -201,7 +201,16 @@ somewhere into your Lua <code>package.path</code>.</p>
 
 
 
-<h2><a name="Contact" id="Contact"></a>Contact</h2>
+<h2><a name="Changes" id="Changes"></a>Changes</h2>
+
+<p>Version 0.3:</p>
+
+<ul><li>Fixed long labels from <code>__tostring</code> metamethods</li>
+    <li>Support for LuaJIT's <code>cdata</code> values</li>
+</ul><p>Version 0.2:</p>
+
+<ul><li>First public release.</li>
+</ul><h2><a name="Contact" id="Contact"></a>Contact</h2>
 
 <p>Philipp Janda, siffiejoe(a)gmx.net</p>
 
@@ -210,7 +219,7 @@ somewhere into your Lua <code>package.path</code>.</p>
 
 <h2><a name="License" id="License"></a>License</h2>
 
-<p>microscope is <em>copyrighted free software</em> distributed under the MIT
+<p><code>microscope</code> is <em>copyrighted free software</em> distributed under the MIT
 license (the same license as Lua 5.1). The full license text follows:</p>
 
 <pre><code class="no-highlight">microscope (c) 2013 Philipp Janda
