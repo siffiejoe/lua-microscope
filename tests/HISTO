@@ -4,6 +4,7 @@ set -e
 LUAV=jit
 LUAV=5.1
 LUAV=5.2
+LUAV=5.3
 
 compile_lua() {
   luac$LUAV -o "$2" "$1"
@@ -15,6 +16,8 @@ if [ "$LUAV" == 5.1 ]; then
   INC=/usr/include/lua5.1
 elif [ "$LUAV" == 5.2 ]; then
   INC=/usr/include/lua5.2
+elif [ "$LUAV" == 5.3 ]; then
+  INC=/home/siffiejoe/.self/programs/lua5.3
 elif [ "$LUAV" == jit ]; then
   INC=/home/siffiejoe/.self/programs/luajit-2.0/include/luajit-2.0
   compile_lua() {
