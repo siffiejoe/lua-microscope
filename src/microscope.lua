@@ -432,9 +432,12 @@ local function make_html_table( db, node, val )
   local depth = node.depth
   node.shape = "plaintext"
   node.is_html_label = true
+  local header = escape( abbrev( tostring( val ) ), true )
+  if getsize then
+    header = header.."  ["..getsize( val ).."]"
+  end
   local label = [[<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
-  <TR><TD PORT="0" COLSPAN="2" BGCOLOR="lightgrey">]] ..
-    escape( abbrev( tostring( val ) ), true ) .. [[
+  <TR><TD PORT="0" COLSPAN="2" BGCOLOR="lightgrey">]] ..  header .. [[
 </TD></TR>
 ]]
   local handled = {}
@@ -472,6 +475,9 @@ local function make_record_table( db, node, val )
   local depth = node.depth
   node.shape = "record"
   local label = "{ <0> " .. escape( abbrev( tostring( val ) ), false )
+  if getsize then
+    label = label.."  ["..getsize( val ).."]"
+  end
   local handled = {}
   -- first the array part
   local n,v = 1, rawget( val, 1 )
@@ -660,7 +666,11 @@ end
 
 
 local function dottify_userdata( db, node, val )
-  node.label = escape( abbrev( tostring( val ) ), false )
+  local label = escape( abbrev( tostring( val ) ), false )
+  if getsize then
+    label = label.."  ["..getsize( val ).."]"
+  end
+  node.label = label
   node.shape = "box"
   node.height = "0.3"
   handle_metatable( db, node, val )
@@ -682,8 +692,12 @@ end
 
 
 local function dottify_thread( db, node, val )
-  node.label = escape( abbrev( tostring( val ) ), false )
-  node.group = node.label
+  local label = escape( abbrev( tostring( val ) ), false )
+  node.group = label
+  if getsize then
+    label = label.."  ["..getsize( val ).."]"
+  end
+  node.label = label
   node.shape = "octagon"
   node.margin = "0.01"
   node.width = "0.3"
@@ -695,7 +709,11 @@ end
 
 
 local function dottify_function( db, node, val )
-  node.label = escape( abbrev( tostring( val ) ), false )
+  local label = escape( abbrev( tostring( val ) ), false )
+  if getsize then
+    label = label.."  ["..getsize( val ).."]"
+  end
+  node.label = label
   node.shape = "ellipse"
   node.margin = "0.01"
   node.height = "0.3"
