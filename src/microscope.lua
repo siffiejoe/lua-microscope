@@ -22,10 +22,17 @@ local tconcat = assert( table.concat )
 -- optional ...
 local getmetatable = getmetatable
 local getfenv = getfenv
-local debug, ioopen, corunning
+local debug, getsize, ioopen, corunning
 do
   local ok, dbg = pcall( require, "debug" )
   if ok then debug = dbg end
+  if _VERSION == "Lua 5.1" and not jit then
+    local ok = pcall( require, "getsize" )
+    if ok and type( debug ) == "table" and
+       type( debug.getsize ) == "function" then
+      getsize = debug.getsize
+    end
+  end
   local ok, io = pcall( require, "io" )
   if ok and type( io ) == "table" and
      type( io.open ) == "function" then
@@ -318,10 +325,24 @@ local function dottify_stack_ref( th, port1, st, port2, db )
     B = st, B_port = port2,
     style = "solid",
     arrowhead = "none",
-    weight = 2,
+    weight = "2",
     color = "lightgrey",
   } )
   th.draw = true
+end
+
+local function dottify_size_ref( n, port1, sn, port2, db )
+  define_edge( db, {
+    A = n, A_port = port1,
+    B = sn, B_port = port2,
+    style = "dotted",
+    label = "size",
+    arrowhead = "none",
+    color = "dimgrey",
+    fontcolor = "dimgrey",
+    fontsize = "10",
+  } )
+  sn.draw = n.draw
 end
 
 
@@ -552,13 +573,13 @@ local function make_record_stack( db, node )
 end
 
 
-local function handle_metatable( db, node, val, port )
+local function handle_metatable( db, node, val )
   local mt = get_metatable( val, db.show_metatables )
   if mt ~= nil then
     local mt_node = db_node( db, mt, node.depth+1 )
     if mt_node then
       local r = type( mt ) == "table" and "0" or nil
-      dottify_metatable_ref( node, port, mt_node, r, db )
+      dottify_metatable_ref( node, nil, mt_node, r, db )
     end
   end
 end
@@ -618,6 +639,14 @@ local function handle_main_stack( db )
   end
 end
 
+local function handle_size( db, node, val )
+  if db.show_sizes and getsize then
+    local sn = db_node( db, getsize( val ), node.depth, {} )
+    sn.cb = "size"
+    dottify_size_ref( node, nil, sn, nil, db )
+  end
+end
+
 
 local function dottify_table( db, node, val )
   if db.use_html then
@@ -625,15 +654,18 @@ local function dottify_table( db, node, val )
   else
     make_record_table( db, node, val )
   end
-  handle_metatable( db, node, val, "0" )
+  handle_metatable( db, node, val )
+  handle_size( db, node, val )
 end
 
 
 local function dottify_userdata( db, node, val )
   node.label = escape( abbrev( tostring( val ) ), false )
   node.shape = "box"
+  node.height = "0.3"
   handle_metatable( db, node, val )
   handle_environment( db, node, val )
+  handle_size( db, node, val )
 end
 
 
@@ -641,6 +673,8 @@ local function dottify_cdata( db, node, val )
   node.label = escape( abbrev( tostring( val ) ), false )
   node.shape = "parallelogram"
   node.margin = "0.01"
+  node.width = "0.3"
+  node.height = "0.3"
   -- cdata objects *do* have a metatable but it's always
   -- the same, so it's not really interesting ...
   -- handle_metatable( db, node, val )
@@ -652,8 +686,11 @@ local function dottify_thread( db, node, val )
   node.group = node.label
   node.shape = "octagon"
   node.margin = "0.01"
+  node.width = "0.3"
+  node.height = "0.3"
   handle_environment( db, node, val )
   handle_stack( db, node, val )
+  handle_size( db, node, val )
 end
 
 
@@ -661,8 +698,10 @@ local function dottify_function( db, node, val )
   node.label = escape( abbrev( tostring( val ) ), false )
   node.shape = "ellipse"
   node.margin = "0.01"
+  node.height = "0.3"
   handle_environment( db, node, val )
   handle_upvalues( db, node, val )
+  handle_size( db, node, val )
 end
 
 
@@ -690,6 +729,17 @@ local function dottify_stack( db, node )
 end
 
 
+local function dottify_size( db, node, val )
+  node.label = escape( abbrev( tostring( val ) ), false )
+  node.shape = "circle"
+  node.width = "0.3"
+  node.margin = "0.01"
+  node.color = "lightgrey"
+  node.fontcolor = "dimgrey"
+  node.fontsize = "10"
+end
+
+
 local callbacks = {
   table = dottify_table,
   [ "function" ] = dottify_function,
@@ -700,7 +750,8 @@ local callbacks = {
   boolean = dottify_other,
   [ "nil" ] = dottify_other,
   stack = dottify_stack,
-  cdata = dottify_cdata
+  cdata = dottify_cdata,
+  size = dottify_size,
 }
 
 local function dottify_go( db, val )
@@ -739,7 +790,8 @@ end
 
 local option_names = {
   "label", "shape", "style", "dir", "arrowhead", "arrowtail", "color",
-  "margin", "group", "weight"
+  "margin", "group", "weight", "fontcolor", "fontsize", "width",
+  "height",
 }
 
 local function process_options_as_text( obj )
@@ -797,6 +849,8 @@ local gvd_options = {
   noregistry = function( db ) db.show_registry = nil end,
   locals = function( db ) db.show_locals = true end,
   nolocals = function( db ) db.show_locals = nil end,
+  sizes = function( db ) db.show_sizes = true end,
+  nosizes = function( db ) db.show_sizes = nil end,
 }
 
 local function default_option( db, opt )

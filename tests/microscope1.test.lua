@@ -273,6 +273,17 @@ do
   dot( t2, "without metatables", "nometatables" )
 end
 
+print( 'testing "(no-)sizes" option ...' )
+do
+  local t1 = {}
+  setmetatable( t1, {} )
+  local function f()
+    return t1, func, full, co
+  end
+  dot( f, "with sizes", "sizes" )
+  dot( f, "without sizes", "nosizes" )
+end
+
 print( "testing max_depth ..." )
 do
   local t1 = { 1 }
