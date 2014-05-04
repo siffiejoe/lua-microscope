@@ -120,6 +120,14 @@ After those two arguments, a number of optional arguments can be given
     `"noregistry"`. All settings that limit graph node output also
     apply to the references in the registry.
 
+*   `"sizes"`, `"nosizes"`
+
+    If [lua-getsize][2] is available in `package.cpath`, the size of a
+    table, userdata, thread, and function will be added to the label
+    automatically. This setting enables/disables the creation of extra
+    nodes in the graph also showing the object's size. The default is
+    `"nosizes"`.
+
 *   any other string
 
     Any other string is used as a label for the graph. If multiple
@@ -128,6 +136,8 @@ After those two arguments, a number of optional arguments can be given
 The output function (if used as first argument) takes one argument and
 should write its argument and a trailing newline to wherever you want
 (the `print`-function is compatible).
+
+  [2]:  http://code.matthewwild.co.uk/lua-getsize/
 
 
 ###                            Examples                            ###
@@ -205,10 +215,14 @@ somewhere into your Lua `package.path`.
 
 ##                              Changes                             ##
 
+Version 0.x:
+
+*   Show objects' sizes if [lua-getsize][2] is available.
+
 Version 0.3:
 
-*   Fixed long labels from `__tostring` metamethods
-*   Support for LuaJIT's `cdata` values
+*   Fixed long labels from `__tostring` metamethods.
+*   Support for LuaJIT's `cdata` values.
 
 Version 0.2:
 
@@ -227,7 +241,7 @@ Comments and feedback are always welcome.
 `microscope` is *copyrighted free software* distributed under the MIT
 license (the same license as Lua 5.1). The full license text follows:
 
-    microscope (c) 2013 Philipp Janda
+    microscope (c) 2013-2014 Philipp Janda
 
     Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the
