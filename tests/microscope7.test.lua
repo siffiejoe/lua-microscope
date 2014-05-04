@@ -16,5 +16,6 @@ setmetatable( t2, {
 
 debug = nil -- disable debug module
 package.preload.debug = nil
+package.loaded.debug = nil
 require( "microscope" )( "example8.dot", t2, "environments", 3 )
 

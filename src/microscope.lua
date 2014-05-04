@@ -26,12 +26,9 @@ local debug, getsize, ioopen, corunning
 do
   local ok, dbg = pcall( require, "debug" )
   if ok then debug = dbg end
-  if _VERSION == "Lua 5.1" and not jit then
-    local ok = pcall( require, "getsize" )
-    if ok and type( debug ) == "table" and
-       type( debug.getsize ) == "function" then
-      getsize = debug.getsize
-    end
+  if not jit then
+    local ok, getsz = pcall( require, "getsize" )
+    if ok then getsize = getsz end
   end
   local ok, io = pcall( require, "io" )
   if ok and type( io ) == "table" and
