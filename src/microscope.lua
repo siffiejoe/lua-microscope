@@ -29,6 +29,10 @@ do
   if not jit then
     local ok, getsz = pcall( require, "getsize" )
     if ok then getsize = getsz end
+    if not getsize and type( debug ) == "table" and
+       type( debug.getsize ) == "function" then
+      getsize = debug.getsize
+    end
   end
   local ok, io = pcall( require, "io" )
   if ok and type( io ) == "table" and
