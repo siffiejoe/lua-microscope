@@ -104,17 +104,26 @@ do
       return c
     end
   end
-  local function makefenvs( f )
+  local function makefenvs()
     if _VERSION == "Lua 5.1" then
       return makefenv( {} )
     else
       return makefenv( nil ), makefenv( true ), makefenv( 123 ),
              makefenv( "hello" ), makefenv( func ), makefenv( light ),
-             makefenv( full ), makefenv( co ), makefenv{}
+             makefenv( full ), makefenv( co ), makefenv( {} )
+    end
+  end
+  local function makeuenvs()
+    if _VERSION ~= "Lua 5.3" then
+      return makeuenv( {} )
+    else
+      return makeuenv( nil ), makeuenv( true ), makeuenv( 123 ),
+             makeuenv( "hello" ), makeuenv( func ), makeuenv( light ),
+             makeuenv( full ), makeuenv( co ), makeuenv( {} )
     end
   end
   local t = {
-    makeuenv{}, { makefenvs() }, maketenv{}
+    { makeuenvs() }, { makefenvs() }, maketenv{}
   }
   dot( t, "all possible Lua types as environments", "environments" )
 end
