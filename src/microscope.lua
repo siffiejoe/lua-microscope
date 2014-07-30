@@ -537,8 +537,8 @@ local function make_html_stack( db, node )
     node.shape = "plaintext"
     node.is_html_label = true
     local label = [[
-    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" COLOR="lightgrey">
-  ]]
+<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" COLOR="lightgrey">
+]]
     for i = start, #frames do
       local frame = frames[ i ]
       local name, func = frame.name, frame.func
