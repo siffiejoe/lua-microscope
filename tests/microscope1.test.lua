@@ -461,5 +461,19 @@ do
   dot( { t, u }, "abbreviation in table cells" )
 end
 
+do
+  local t = {}
+  setmetatable( t, {
+    __tostring = function( v )
+      error( "Argh!" )
+    end
+  } )
+  local u = newproxy( true )
+  getmetatable( u ).__tostring = function( u )
+    error( "Argh!" )
+  end
+  dot( { t, u }, "__tostring raising error" )
+end
+
 -- TODO ;-)
 

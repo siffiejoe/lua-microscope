@@ -11,6 +11,7 @@ local tostring = assert( tostring )
 local select = assert( select )
 local next = assert( next )
 local rawget = assert( rawget )
+local rawset = assert( rawset )
 local pcall = assert( pcall )
 local string = require( "string" )
 local ssub = assert( string.sub )
@@ -215,6 +216,25 @@ else
     return dummy_iter
   end
 
+end
+
+
+local function rawtostring( v )
+  local ok, res = pcall( tostring, v )
+  if ok then
+    return res
+  end
+  local mt = get_metatable( v, true )
+  if type( mt ) == "table" then
+    local tos = rawget( mt, "__tostring" )
+    rawset( mt, "__tostring", nil )
+    ok, res = pcall( tostring, v )
+    rawset( mt, "__tostring", tos )
+    if ok then
+      return res
+    end
+  end
+  return "<a "..type( v )..">"
 end
 
 
@@ -423,7 +443,7 @@ local function make_label_elem( tnode, v, db, subid, depth, alt )
     if n then
       dottify_ref( tnode, subid, n, t == "table" and "0" or nil, db )
     end
-    alt = alt or tostring( v )
+    alt = alt or rawtostring( v )
     return escape( abbrev( alt ), db.use_html )
   end
 end
@@ -433,7 +453,7 @@ local function make_html_table( db, node, val )
   local depth = node.depth
   node.shape = "plaintext"
   node.is_html_label = true
-  local header = escape( abbrev( tostring( val ) ), true )
+  local header = escape( abbrev( rawtostring( val ) ), true )
   if getsize then
     header = header.."  ["..getsize( val ).."]"
   end
@@ -475,7 +495,7 @@ end
 local function make_record_table( db, node, val )
   local depth = node.depth
   node.shape = "record"
-  local label = "{ <0> " .. escape( abbrev( tostring( val ) ), false )
+  local label = "{ <0> " .. escape( abbrev( rawtostring( val ) ), false )
   if getsize then
     label = label.."  ["..getsize( val ).."]"
   end
@@ -667,7 +687,7 @@ end
 
 
 local function dottify_userdata( db, node, val )
-  local label = escape( abbrev( tostring( val ) ), false )
+  local label = escape( abbrev( rawtostring( val ) ), false )
   if getsize then
     label = label.."  ["..getsize( val ).."]"
   end
@@ -681,7 +701,7 @@ end
 
 
 local function dottify_cdata( db, node, val )
-  node.label = escape( abbrev( tostring( val ) ), false )
+  node.label = escape( abbrev( rawtostring( val ) ), false )
   node.shape = "parallelogram"
   node.margin = "0.01"
   node.width = "0.3"
