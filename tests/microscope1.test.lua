@@ -463,16 +463,16 @@ end
 
 do
   local t = {}
-  setmetatable( t, {
-    __tostring = function( v )
-      error( "Argh!" )
-    end
-  } )
+  local mt = { __tostring = function() error( "Argh!" ) end }
+  setmetatable( t, mt )
   local u = newproxy( true )
   getmetatable( u ).__tostring = function( u )
     error( "Argh!" )
   end
-  dot( { t, u }, "__tostring raising error" )
+  debug.setmetatable( 1, mt )
+  debug.setmetatable( true, mt )
+  dot( { t, u, false, 123 }, "__tostring raising error" )
+  mt.__tostring = nil
 end
 
 -- TODO ;-)

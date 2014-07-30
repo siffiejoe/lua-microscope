@@ -269,7 +269,7 @@ local function db_node( db, val, depth, key )
      (key == nil or not db.prune[ key ]) then
     db.n_nodes = db.n_nodes + 1
     node = {
-      id = tostring( db.n_nodes ),
+      id = db.n_nodes.."",
       value = val,
       depth = depth,
       shape = nil, label = nil, draw = nil, next = nil,
@@ -435,7 +435,7 @@ end
 local function make_label_elem( tnode, v, db, subid, depth, alt )
   local t = type( v )
   if t == "number" or t == "boolean" then
-    return escape( tostring( v ), db.use_html )
+    return escape( ptostring( v ), db.use_html )
   elseif t == "string" then
     return quote( escape( abbrev( v ), db.use_html ) )
   else -- userdata, function, thread, table
@@ -465,7 +465,7 @@ local function make_html_table( db, node, val )
   -- first the array part
   local n, v = 1, rawget( val, 1 )
   while v ~= nil do
-    local el_label = make_label_elem( node, v, db, tostring( n ), depth )
+    local el_label = make_label_elem( node, v, db, n.."", depth )
     label = label .. [[
   <TR><TD PORT="]] .. n .. [[" COLSPAN="2">]] .. el_label .. [[
 </TD></TR>
@@ -503,7 +503,7 @@ local function make_record_table( db, node, val )
   -- first the array part
   local n,v = 1, rawget( val, 1 )
   while v ~= nil do
-    local el_label = make_label_elem( node, v, db, tostring( n ), depth )
+    local el_label = make_label_elem( node, v, db, n.."", depth )
     label = label .. " | <" .. n .. "> " .. el_label
     handled[ n ] = true
     n = n + 1
@@ -550,7 +550,7 @@ local function make_html_stack( db, node )
       n = n + 1
       for i = #frame, 1, -1 do
         label = label .. '  <TR><TD>' ..
-                escape( tostring( i ), true ) .. '</TD><TD>' ..
+                escape( i.."", true ) .. '</TD><TD>' ..
                 escape( abbrev( frame[ i ][ 1 ] ), true ) ..
                 '</TD><TD PORT="' .. n .. '">' ..
                 make_label_elem( node, frame[ i ][ 2 ], db, n, depth ) ..
@@ -582,7 +582,7 @@ local function make_record_stack( db, node )
       n = n + 1
       local nums, keys, values = {}, {}, {}
       for i = #frame, 1, -1 do
-        nums[ #nums+1 ] = escape( tostring( i ), false )
+        nums[ #nums+1 ] = escape( i.."", false )
         keys[ #keys+1 ] = escape( abbrev( frame[ i ][ 1 ] ), false )
         values[ #values+1 ] = "<" .. n .. "> " ..
           make_label_elem( node, frame[ i ][ 2 ], db, n, depth )
@@ -713,7 +713,7 @@ end
 
 
 local function dottify_thread( db, node, val )
-  local label = escape( abbrev( tostring( val ) ), false )
+  local label = escape( abbrev( ptostring( val ) ), false )
   node.group = label
   if getsize then
     label = label.."  ["..getsize( val ).."]"
@@ -730,7 +730,7 @@ end
 
 
 local function dottify_function( db, node, val )
-  local label = escape( abbrev( tostring( val ) ), false )
+  local label = escape( abbrev( ptostring( val ) ), false )
   if getsize then
     label = label.."  ["..getsize( val ).."]"
   end
@@ -751,14 +751,14 @@ end
 
 
 local function dottify_other( db, node, val )
-  node.label = escape( abbrev( tostring( val ) ), false )
+  node.label = escape( abbrev( ptostring( val ) ), false )
   node.shape = "plaintext"
 end
 
 
 local function dottify_stack( db, node )
   if node.thread then
-    node.group = escape( abbrev( tostring( node.thread ) ), false )
+    node.group = escape( abbrev( ptostring( node.thread ) ), false )
   end
   if db.use_html then
     make_html_stack( db, node )
@@ -769,7 +769,7 @@ end
 
 
 local function dottify_size( db, node, val )
-  node.label = escape( abbrev( tostring( val ) ), false )
+  node.label = escape( abbrev( val.."" ), false )
   node.shape = "circle"
   node.width = "0.3"
   node.margin = "0.01"
