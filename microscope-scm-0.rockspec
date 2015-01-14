@@ -1,7 +1,7 @@
 package = "microscope"
-version = "0.3-1"
+version = "scm-0"
 source = {
-  url = "${SRCURL}"
+  url = "git://github.com/siffiejoe/lua-microscope.git",
 }
 description = {
   summary = "Creates images of arbitrary Lua values using GraphViz",
@@ -10,11 +10,11 @@ description = {
     GraphViz .dot-files that can be transformed into a variety of
     image formats.
   ]],
-  homepage = "${HPURL}",
+  homepage = "http://siffiejoe.github.io/lua-microscope/",
   license = "MIT"
 }
 dependencies = {
-  "lua >= 5.1, <= 5.2"
+  "lua >= 5.1, < 5.4"
 }
 build = {
   type = "builtin",
