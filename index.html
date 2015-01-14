@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="content-type" content="text/html; charset=utf-8" /><title>microscope -- Visualizing Complex Lua Values Using GraphViz</title><link rel="stylesheet" type="text/css" href="default.css" /><link rel="stylesheet" type="text/css" href="highlight.css" /><script type="text/javascript" src="highlight.pack.js"></script><script type="text/javascript">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>microscope -- Visualizing Complex Lua Values Using GraphViz</title>
+	<link rel="stylesheet" type="text/css" href="default.css" />
+<link rel="stylesheet" type="text/css" href="highlight.css" /><script type="text/javascript" src="highlight.pack.js"></script><script type="text/javascript">
       hljs.initHighlightingOnLoad();
-    </script></head><body>
+    </script></head>
+<body>
 
-<p><img src="microscope.png" alt="microscope Logo" /></p>
-
-<h1>microscope -- Visualizing Complex Lua Values Using GraphViz</h1><div class="toc"><a href="#Introduction" title="Introduction">Introduction</a> · <a href="#Basic_Usage" title="Basic Usage">Basic Usage</a> · <a href="#Reference" title="Reference">Reference</a> · <a href="#Download" title="Download">Download</a> · <a href="#Installation" title="Installation">Installation</a> · <a href="#Changes" title="Changes">Changes</a> · <a href="#Contact" title="Contact">Contact</a> · <a href="#License" title="License">License</a></div>
+<p><img src="logo.png" alt="project logo" /></p><h1>microscope -- Visualizing Complex Lua Values Using GraphViz</h1><div class="toc"><a href="#Introduction" title="Introduction">Introduction</a> · <a href="#Basic_Usage" title="Basic Usage">Basic Usage</a> · <a href="#Reference" title="Reference">Reference</a> · <a href="#Download" title="Download">Download</a> · <a href="#Installation" title="Installation">Installation</a> · <a href="#Changes" title="Changes">Changes</a> · <a href="#Contact" title="Contact">Contact</a> · <a href="#License" title="License">License</a></div>
 
 <h2><a name="Introduction" id="Introduction"></a>Introduction</h2>
 
@@ -62,12 +66,16 @@ $ dot -T gif -o example1.gif example1.dot
 <p>The function returned from the <code>require</code>-call takes two mandatory
 arguments:</p>
 
-<ol><li>a file name (typically a .dot file) or an output function</li>
+<ol>
+    <li>a file name (typically a .dot file) or an output function</li>
     <li>a Lua value to show</li>
-</ol><p>After those two arguments, a number of optional arguments can be given
+</ol>
+
+<p>After those two arguments, a number of optional arguments can be given
 (in any order):</p>
 
-<ul><li><p>a number</p>
+<ul>
+    <li><p>a number</p>
     
     <p>This limits the number of linked values to display. <code>1</code> means
     only the passed Lua value itself, <code>2</code> means the value itself and
@@ -117,13 +125,23 @@ arguments:</p>
     is included as another root node in the graph output. Default is
     <code>"noregistry"</code>. All settings that limit graph node output also
     apply to the references in the registry.</p></li>
+    <li><p><code>"sizes"</code>, <code>"nosizes"</code></p>
+    
+    <p>If <a href="http://code.matthewwild.co.uk/lua-getsize/">lua-getsize</a> is available in <code>package.cpath</code>, the size of a
+    table, userdata, thread, and function will be added to the label
+    automatically. This setting enables/disables the creation of extra
+    nodes in the graph also showing the object's size. The default is
+    <code>"nosizes"</code>.</p></li>
     <li><p>any other string</p>
     
     <p>Any other string is used as a label for the graph. If multiple
     labels are given, only the last one is used.</p></li>
-</ul><p>The output function (if used as first argument) takes one argument and
+</ul>
+
+<p>The output function (if used as first argument) takes one argument and
 should write its argument and a trailing newline to wherever you want
 (the <code>print</code>-function is compatible).</p>
+
 
 
 <h3>Examples</h3>
@@ -203,14 +221,29 @@ somewhere into your Lua <code>package.path</code>.</p>
 
 <h2><a name="Changes" id="Changes"></a>Changes</h2>
 
+<p>Version 0.4:</p>
+
+<ul>
+    <li>Compatibility with Lua 5.3</li>
+    <li>Show objects' sizes if <a href="http://code.matthewwild.co.uk/lua-getsize/">lua-getsize</a> is available.</li>
+    <li>Protect from errors in <code>__tostring</code> metamethods</li>
+</ul>
+
 <p>Version 0.3:</p>
 
-<ul><li>Fixed long labels from <code>__tostring</code> metamethods</li>
-    <li>Support for LuaJIT's <code>cdata</code> values</li>
-</ul><p>Version 0.2:</p>
+<ul>
+    <li>Fixed long labels from <code>__tostring</code> metamethods.</li>
+    <li>Support for LuaJIT's <code>cdata</code> values.</li>
+</ul>
 
-<ul><li>First public release.</li>
-</ul><h2><a name="Contact" id="Contact"></a>Contact</h2>
+<p>Version 0.2:</p>
+
+<ul>
+    <li>First public release.</li>
+</ul>
+
+
+<h2><a name="Contact" id="Contact"></a>Contact</h2>
 
 <p>Philipp Janda, siffiejoe(a)gmx.net</p>
 
@@ -222,7 +255,7 @@ somewhere into your Lua <code>package.path</code>.</p>
 <p><code>microscope</code> is <em>copyrighted free software</em> distributed under the MIT
 license (the same license as Lua 5.1). The full license text follows:</p>
 
-<pre><code class="no-highlight">microscope (c) 2013 Philipp Janda
+<pre><code class="no-highlight">microscope (c) 2013-2014 Philipp Janda
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
