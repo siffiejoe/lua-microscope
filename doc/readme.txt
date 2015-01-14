@@ -1,5 +1,3 @@
-![microscope Logo](microscope.png)
-
 #     microscope -- Visualizing Complex Lua Values Using GraphViz    #
 
 ##                           Introduction                           ##
@@ -215,9 +213,11 @@ somewhere into your Lua `package.path`.
 
 ##                              Changes                             ##
 
-Version 0.x:
+Version 0.4:
 
+*   Compatibility with Lua 5.3
 *   Show objects' sizes if [lua-getsize][2] is available.
+*   Protect from errors in `__tostring` metamethods
 
 Version 0.3:
 
