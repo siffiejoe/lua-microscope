@@ -79,12 +79,16 @@ end
 
 print( "testing all Lua types as environments ..." )
 do
-  local function makeuenv( val )
+  local function makeuenv( ... )
     local u = newproxy()
     if _VERSION == "Lua 5.1" then
-      debug.setfenv( u, val )
+      debug.setfenv( u, (...) )
+    elseif _VERSION < "Lua 5.4" then
+      debug.setuservalue( u, (...) )
     else
-      debug.setuservalue( u, val )
+      for i = 1, select( '#', ... ) do
+        debug.setuservalue( u, select( i, ... ), i )
+      end
     end
     return u
   end
@@ -110,16 +114,16 @@ do
     else
       return makefenv( nil ), makefenv( true ), makefenv( 123 ),
              makefenv( "hello" ), makefenv( func ), makefenv( light ),
-             makefenv( full ), makefenv( co ), makefenv( {} )
+             makefenv( full ), makefenv( co ), makefenv( {}, "hello" )
     end
   end
   local function makeuenvs()
-    if _VERSION ~= "Lua 5.3" then
+    if _VERSION < "Lua 5.3" then
       return makeuenv( {} )
     else
       return makeuenv( nil ), makeuenv( true ), makeuenv( 123 ),
              makeuenv( "hello" ), makeuenv( func ), makeuenv( light ),
-             makeuenv( full ), makeuenv( co ), makeuenv( {} )
+             makeuenv( full ), makeuenv( co ), makeuenv( {}, 456 )
     end
   end
   local t = {

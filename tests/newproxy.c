@@ -29,7 +29,11 @@
 
 static int newproxy( lua_State* L ) {
   lua_settop( L, 1 );
+#if LUA_VERSION_NUM >= 504
+  lua_newuserdatauv( L, 0, 2 );
+#else
   lua_newuserdata( L, 0 );
+#endif
   if( lua_toboolean( L, 1 ) == 0 )   /* false value */
     return 1;
   else if( lua_isboolean( L, 1 ) ) { /* true */

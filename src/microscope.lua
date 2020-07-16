@@ -79,33 +79,50 @@ if type( debug ) == "table" and
    type( debug.getfenv ) == "function" then
 
   local get_fe = debug.getfenv
-  function get_environment( val, enabled )
-    if enabled then return get_fe( val ) end
+  function get_environment( val, n, enabled )
+    if enabled and n == 1 then
+      local uv = get_fe( val )
+      return uv, uv ~= nil
+    end
+    return nil, false
   end
 
 elseif type( debug ) == "table" and
        type( debug.getuservalue ) == "function" then
 
   local get_uv = debug.getuservalue
-  function get_environment( val, enabled )
+  if _VERSION < "Lua 5.4" then
+    local get_uv_noindex = get_uv
+    function get_uv( val, n )
+      if n == 1 then
+        local uv = get_uv_noindex( val )
+        return uv, uv ~= nil
+      end
+      return nil, false
+    end
+  end
+  function get_environment( val, n, enabled )
     if enabled then
-      -- getuservalue in Lua5.2 throws on light userdata!
-      local ok, res = pcall( get_uv, val )
-      if ok then return res end
+      -- getuservalue in Lua 5.2 throws on light userdata!
+      local ok, res1, res2 = pcall( get_uv, val, n )
+      if ok then return res1, res2 end
+      return nil, false
     end
   end
 
 elseif type( getfenv ) == "function" then
 
-  function get_environment( val, enabled )
-    if enabled and type( val ) == "function" then
-      return getfenv( val )
+  function get_environment( val, n, enabled )
+    if enabled and n == 1 and type( val ) == "function" then
+      local uv = getfenv( val )
+      return uv, uv ~= nil
     end
+    return nil, false
   end
 
 else
 
-  function get_environment() end
+  function get_environment() return nil, false end
 
 end
 
@@ -315,7 +332,6 @@ local function dottify_environment_ref( src, port1, env, port2, db )
     style = "dotted",
     dir = "both",
     arrowtail = "dot",
-    label = "environment",
     color = "red"
   } )
   src.draw, env.draw = true, true
@@ -612,14 +628,18 @@ local function handle_metatable( db, node, val )
 end
 
 local function handle_environment( db, node, val )
-  local env = get_environment( val, db.show_environments )
-  if env ~= nil then
-    local env_node = db_node( db, env, node.depth+1 )
-    if env_node then
-      local r = type( env ) == "table" and "0" or nil
-      dottify_environment_ref( node, nil, env_node, r, db )
+  local n = 0
+  repeat
+    n = n + 1
+    local env, has_env = get_environment( val, n, db.show_environments )
+    if has_env and env ~= nil then
+      local env_node = db_node( db, env, node.depth+1 )
+      if env_node then
+        local r = type( env ) == "table" and "0" or nil
+        dottify_environment_ref( node, nil, env_node, r, db )
+      end
     end
-  end
+  until not has_env
 end
 
 local function handle_upvalues( db, node, val )

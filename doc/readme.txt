@@ -213,6 +213,10 @@ somewhere into your Lua `package.path`.
 
 ##                              Changes                             ##
 
+Version 0.5:
+
+*   Compatibility with Lua 5.4
+
 Version 0.4:
 
 *   Compatibility with Lua 5.3
@@ -241,7 +245,7 @@ Comments and feedback are always welcome.
 `microscope` is *copyrighted free software* distributed under the MIT
 license (the same license as Lua 5.1). The full license text follows:
 
-    microscope (c) 2013-2014 Philipp Janda
+    microscope (c) 2013-2020 Philipp Janda
 
     Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the
